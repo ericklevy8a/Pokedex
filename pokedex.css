@@ -1,0 +1,433 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;900&display=swap');
+
+:root {
+
+    --header-color: #fff;
+    --header-bg-color: #333;
+
+    --main--color: #369;
+    --main-bg-color: #ccc;
+
+    --hover-color: #c33;
+
+    --card-color: #000;
+    --card-bg-color: #fff;
+
+    --dialog-color: #000;
+    --dialog-bg-color: #fff;
+
+    --button-color: #000;
+    --button-bg-color: #ccc;
+
+    --button-hover-color: #fff;
+    --button-hover-bg-color: var(--hover-color);
+
+}
+
+* {
+    border: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    height: 100vh;
+    color: var(--main--color);
+    background-color: var(--main-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+header {
+    height: 64px;
+    color: var(--header-color);
+    background-color: var(--header-bg-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header * {
+    font-family: 'Merriweather', serif;
+}
+
+header h1 {
+    font-weight: 900;
+    font-size: 24px;
+    margin-left: 16px;
+    padding: 16px;
+}
+
+i.pokedex-logo {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    background: url('./img/pokeball.png') no-repeat;
+    background-size: 100% 100%;
+    vertical-align:bottom;
+}
+
+header nav {
+    margin: 0;
+}
+
+header nav ul {
+    margin-right: 16px;
+}
+
+header nav li {
+    display: inline-block;
+}
+
+header nav li a {
+    color: var(--header-color);
+    font-weight: 900;
+    text-decoration: none;
+    padding: 16px;
+}
+header nav li a:hover {
+    color: var(--hover-color);
+    background-color: var(--header-color);
+}
+
+footer {
+    height: 64px;
+    color: var(--header-color);
+    background-color: var(--header-bg-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+footer * {
+    font-family: 'Merriweather', serif;
+}
+
+/* MAIN CONTAINER */
+
+main {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+#pokedex-container {
+    width: fit-content;
+    margin: 0px auto;
+    padding: 4px 4px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#pokedex-container .card-mini {
+    color: var(--card-color);
+    background: var(--card-bg-color);
+    background-size: 92px 92px;
+    border-radius: 8px;
+    padding: 8px;
+    width: 120px;
+    height: 160px;
+    font-size: 12px;
+    margin: 4px;
+    /* text-shadow: 1px 1px 1px #fff, -1px -1px 1px #fff, 1px -1px 1px #fff, -1px 1px 1px #fff; */
+    /* text-align: center; */
+    /* font-weight: 700; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#pokedex-container .card-mini:hover {
+    cursor: pointer;
+    margin: 3px 5px 5px 3px;
+    box-shadow: 1px 1px 4px #000;
+}
+
+#pokedex-container .card-mini .head {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+#pokedex-container .card-mini .head .circle {
+    width: 1.3em;
+    height: 1em;
+    border-radius: 1em;
+
+}
+
+#pokedex-container .card-mini img {
+    width: 96px;
+    height: 96px;
+}
+
+#pokedex-container .card-mini label {
+    text-align: center;
+}
+
+/* STYLES FOR MODAL DIALOGS */
+
+.modal-screen {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    overflow: auto;
+}
+
+.modal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    color: var(--dialog-color);
+    background-color: var(--dialog-bg-color);
+    display: none;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 4px 4px 16px black;
+}
+
+.modal-container {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.modal-header {
+    color: var(--header-color);
+    background-color: var(--header-bg-color);
+    border-radius: 8px 8px 0 0;
+    padding: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.modal-header h4 {
+    font-size: 1.5em;
+    margin: 0 8px;
+}
+
+.modal-header button.modal-close {
+    color: var(--header-color);
+    background-color: var(--header-bg-color);
+    border-radius: 0.5em;
+    border: none;
+    font-size: 24px;
+    width: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+}
+
+.modal-header button.modal-close:hover {
+    color: var(--hover-color);
+    background-color: var(--header-color);
+}
+
+.modal-body {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.modal-body p {
+    /* margin-bottom: 2em; */
+    text-align: justify;
+}
+
+.modal-body label {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.modal-footer {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+}
+
+.modal-footer button {
+    color: var(--button-color);
+    background-color: var(--button-bg-color);
+    padding: 8px;
+    margin-left: 4px;
+    text-transform: uppercase;
+    border-radius: 0.5em;
+    border: none;
+}
+
+.modal-footer button:hover {
+    color: var(--button-hover-color);
+    background-color: var(--button-hover-bg-color);
+}
+
+.modal-header, .modal-body, .modal-footer {
+    flex-shrink: 0;
+}
+
+.fade {
+    transition: opacity 500ms, visibility 500ms step-end; /* display 500ms step-end; */
+    opacity: 0;
+    visibility: hidden;
+    /* display: none; */
+}
+
+.fade.show {
+    transition: opacity 500ms, visibility 500ms step-start; /* display 2500ms step-start; */
+    /* display: block; */
+    visibility: visible;
+    opacity: 1;
+}
+
+/* CARD BOX */
+
+#cardbox {
+    min-width: 320px;
+    min-height: 200px;
+}
+
+#cardbox #section-sprites {
+    display: flex;
+    flex-direction: column;
+}
+
+#cardbox #section-sprites div {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-around;
+}
+
+#cardbox #section-sprites div label {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+#cardbox #section-sprites input[type="checkbox"] {
+    margin-bottom: 0;
+}
+
+#cardbox #section-sprites img.sprite {
+    display: block;
+    min-height: 192px;
+    min-width: 192px;
+    margin: 20px auto;
+    filter: drop-shadow(0px 0px 4px #000);
+}
+
+#cardbox #section-size {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 1em;
+}
+
+#cardbox #section-size > * {
+    margin: 0;
+    text-align: center;
+}
+
+#cardbox #section-types {
+    text-align: center;
+}
+
+#cardbox .type-slot {
+    display: inline-block;
+    color: white;
+    background-color: gray;
+    min-width: 5em;
+    padding: 4px;
+    margin:  0 0.5em 0 0.5em;
+    margin-bottom: 3px;
+    border-radius: 1em;
+    border: none;
+    cursor: pointer;
+    text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+}
+
+#cardbox .type-slot.current {
+    border-radius: 0.5em 0.5em 0 0;
+    margin-bottom: 0;
+}
+
+#cardbox .type-slot:hover {
+    box-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+}
+
+#cardbox .tabify-tab {
+    border: 3px solid;
+    border-radius: 0.5em;
+    padding: 20px;
+}
+
+/* TABIFY TABS */
+
+.tabify-tabs-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.tabify-tabs-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+}
+
+.tabify-tabs-header > li {
+    cursor: pointer;
+}
+
+.tabify-tabs {
+    margin: 0;
+    padding: 0;
+}
+
+.tabify-tab {
+    display: none;
+}
+
+.tabify-tab {
+    display: flex;
+}
+
+/* SOME GENERAL FORMATTER CLASSES */
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.expanded {
+    width: 100%;
+}
+
+/* End of Code */

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="pokedex.css">
+</head>
+
+<body>
+    <header>
+        <h1><i class="pokedex-logo"></i>Pokedex</h1>
+        <nav>
+            <ul>
+                <li><a href="#">List</a></li>
+                <li><a href="#">Options</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="pokedex-container">
+            <!-- MAIN CONTENT -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2022 by Erick Levy!</p>
+    </footer>
+
+    <!-- TAGS FOR MODAL DIALOGS -->
+    <div id="modal-screen" class="modal-screen fade">
+        <div class="modal-content">
+
+            <!-- MSGBOX -->
+            <div id="msgbox" class="modal-dialog fade">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h4 id="msgbox-title" class="modal-title">Title</h4>
+                        <button type="button" id="msgbox-title-close" class="modal-close">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="msgbox-text">Text paragraph</p>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="msgbox-buttons">
+                            <!-- BUTTONS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARDBOX TO DISPLAY THE POKEMON DATA -->
+            <div id="cardbox" class="modal-dialog fade">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h4 id="cardbox-title" class="modal-title">Title</h4>
+                        <button type="button" id="cardbox-title-close" class="modal-close">X</button>
+                    </div>
+                    <div id="cardbox-content" class="modal-body">
+                        <!-- SPRITES -->
+                        <section id="section-sprites">
+                            <div>
+                                <label><input type="checkbox" id="check-back" name="back" value="back">
+                                    Back</label>
+                                <label><input type="checkbox" id="check-shiny" name="shiny" value="shiny">
+                                    Shiny</label>
+                                <label><input type="checkbox" id="check-female" name="female" value="female">
+                                    Female</label>
+                            </div>
+                            <img class="sprite" id="image-sprite" src="" title="sprite">
+                        </section>
+                        <!-- SIZE (WEIGHT AND HEIGHT) -->
+                        <section id="section-size">
+                            <label>Weight: <span id="size-weight"></span></label>
+                            <label>Height: <span id="size-height"></span></label>
+                        </section>
+                        <!-- TYPES -->
+                        <section id="section-types">
+                            <div class="tabify-tabs-container" id="types-tabs-container">
+                                <ul class="tabify-tabs-header" id="types-tabs-header">
+                                    <!-- TABS HEADERS -->
+                                </ul>
+                                <ul class="tabify-tabs" id="types-tabs">
+                                    <!-- TABS BODIES -->
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+</body>
+
+<script src="pokedex.js"></script>
+
+</html>
