@@ -242,6 +242,20 @@ function cardboxUpdateSprites() {
     const checkBack = document.getElementById('check-back');
     const checkShiny = document.getElementById('check-shiny');
     const checkFemale = document.getElementById('check-female');
+    // Verify back sprites
+    if (sprites['back_default'] == null) {
+        checkBack.checked = false;
+        checkBack.disabled = true;
+    } else {
+        checkBack.disabled = false;
+    }
+    // Verify shiny sprites
+    if (sprites['front_shiny'] == null) {
+        checkShiny.checked = false;
+        checkShiny.disabled = true;
+    } else {
+        checkShiny.disabled = false;
+    }
     // Verify female sprites
     if (sprites['front_female'] == null) {
         checkFemale.checked = false;
