@@ -145,8 +145,10 @@ main {
 
 #pokedex-container .card-mini:hover {
     cursor: pointer;
-    margin: 3px 5px 5px 3px;
-    box-shadow: 1px 1px 4px #000;
+    border: 5px solid #c33;
+    padding: 3px;
+    /* margin: 3px 5px 5px 3px;
+    box-shadow: 1px 1px 4px #000; */
 }
 
 #pokedex-container .card-mini .head {
@@ -156,11 +158,9 @@ main {
     justify-content: start;
 }
 
-#pokedex-container .card-mini .head .circle {
-    width: 1.3em;
-    height: 1em;
-    border-radius: 1em;
-
+#pokedex-container .card-mini .head .type-icon {
+    width: 16px;
+    height: 16px;
 }
 
 #pokedex-container .card-mini img {
@@ -227,19 +227,21 @@ main {
     margin: 0 8px;
 }
 
-.modal-header button.modal-close {
+.modal-header .modal-close {
     color: var(--header-color);
+    fill: var(--header-color);
     background-color: var(--header-bg-color);
-    border-radius: 0.5em;
+    border-radius: 1em;
     border: none;
     font-size: 24px;
-    width: 40px;
+    width: 32px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 600;
 }
 
-.modal-header button.modal-close:hover {
+.modal-header .modal-close:hover {
     color: var(--hover-color);
+    fill: var(--hover-color);
     background-color: var(--header-color);
 }
 
@@ -352,21 +354,37 @@ main {
 }
 
 #cardbox .type-slot {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
     color: white;
     background-color: gray;
-    min-width: 5em;
+    min-width: 7em;
     padding: 4px;
     margin:  0 0.5em 0 0.5em;
     margin-bottom: 3px;
     border-radius: 1em;
     border: none;
     cursor: pointer;
-    text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+    /* text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000; */
+}
+
+#cardbox .type-slot .type-title {
+    margin-top: 4px;
+    margin-right: 16px;
+    width: 100%;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#cardbox .type-slot .type-icon {
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(1px 1px 0px #fff) drop-shadow(-1px -1px 0px #fff) drop-shadow(-1px 1px 0px #fff) drop-shadow(1px -1px 0px #fff);
 }
 
 #cardbox .type-slot.current {
-    border-radius: 0.5em 0.5em 0 0;
+    border-radius: 1em 0.5em 0 0;
     margin-bottom: 0;
 }
 

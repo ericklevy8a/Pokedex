@@ -90,18 +90,15 @@ var intersectionCallback = function (entries, observer) {
                     let imageUrl = data.sprites.front_default || './img/null.png';
                     let name = prepareTitle(data.name);
 
+                    // Type dependent colors
                     let head = document.createElement('div');
                     head.classList.add('head');
-
-                    // Type dependent colors
-                    let types = [];
-                    [...data.types].forEach(type => types.push(type.type.name));
-                    let color = typesColors[types[0]];
-                    head.innerHTML += `<span class="circle" title="${types[0]}" style="background-color:${color}">&nbsp;</span>`;
-                    if (types.length > 1) {
-                        let color2 = typesColors[types[1]];
-                        head.innerHTML += `<span class="circle" title="${types[1]}" style="background-color:${color2}">&nbsp;</span>`;
-                    }
+                    [...data.types].forEach(type => {
+                        let name = type.type.name;
+                        let title = prepareTitle(name);
+                        let color = typesColors[name];
+                        head.innerHTML += `<img class="type-icon" src="./img/type/${name}.svg" title="${title}">`;
+                    });
                     head.innerHTML += `<span class="expanded right">${id}</span>`;
                     target.appendChild(head);
 
@@ -245,6 +242,13 @@ function cardboxUpdateSprites() {
     const checkBack = document.getElementById('check-back');
     const checkShiny = document.getElementById('check-shiny');
     const checkFemale = document.getElementById('check-female');
+    // Verify female sprites
+    if (sprites['front_female'] == null) {
+        checkFemale.checked = false;
+        checkFemale.disabled = true;
+    } else {
+        checkFemale.disabled = false;
+    }
     // Select image
     let selKey = 'front_default';
     selKey = checkBack.checked ? 'back' : 'front';
@@ -262,24 +266,24 @@ function cardboxUpdateSprites() {
 }
 
 const typesColors = {
-    normal: '#A8A878',
-    fire: '#F08030',
-    water: '#6890F0',
-    electric: '#F8D030',
-    grass: '#78C850',
-    ice: '#98D8D8',
-    fighting: '#C03028',
-    poison: '#A040A0',
-    ground: '#E0C068',
-    flying: '#A890F0',
-    psychic: '#F85888',
-    bug: '#A8B820',
-    rock: '#B8A038',
-    ghost: '#705898',
-    dragon: '#7038F8',
-    dark: '#705848',
-    steel: '#B8B8D0',
-    fairy: '#EE99AC',
+    bug: '#83C300',
+    dark: '#5B5466',
+    dragon: '#006FC9',
+    electric: '#FBD100',
+    fairy: '#FB89EB',
+    fighting: '#E0306A',
+    fire: '#FF9741',
+    flying: '#89AAE3',
+    ghost: '#4C6AB2',
+    grass: '#38BF4B',
+    ground: '#E87236',
+    ice: '#4CD1C0',
+    normal: '#919AA2',
+    poison: '#B567CE',
+    psychic: '#FF6675',
+    rock: '#C8B686',
+    steel: '#5A8EA2',
+    water: '#3692DC',
 };
 
 function cardboxUpdateTypes() {
@@ -293,16 +297,20 @@ function cardboxUpdateTypes() {
     typesTabs.innerHTML = '';
     types.forEach(slot => {
         // Tab header
-        let header = document.createElement('li');
+        let name = slot.type.name;
+        let title = prepareTitle(name);
+        let color = typesColors[name];
+        let header = document.createElement('div');
         header.classList.add('type-slot');
-        header.style.backgroundColor = typesColors[slot.type.name];
-        header.innerText = prepareTitle(slot.type.name);
+        header.style.backgroundColor = color;
+        header.innerHTML = `<img class="type-icon" src="./img/type/${name}.svg"/>`;
+        header.innerHTML += `<span class="type-title">${title}</span>`;
         typesTabsHeader.appendChild(header);
         // Tab body
         let body = document.createElement('div');
         body.classList.add('tabify-tab');
         body.dataset.url = slot.type.url;
-        body.style.borderColor = typesColors[slot.type.name];
+        body.style.borderColor = color;
         typesTabs.appendChild(body);
     });
     tabify(typesTabsContainer);
@@ -326,9 +334,7 @@ function tabLoadContent(element) {
         element.innerHTML = element.dataset.url;
         let data = pokeFetchUrl(element.dataset.url);
         console.log(data);
-        let html = '';
-
-
+        // TODO:
     }
 }
 
