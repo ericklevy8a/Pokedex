@@ -334,7 +334,7 @@ function tabLoadContent(element) {
         element.innerHTML = element.dataset.url;
         let data = pokeFetchUrl(element.dataset.url);
         console.log(data);
-        // TODO:
+        // TODO: display table(s) for damage from and damage to (double, half and no damage)
     }
 }
 
