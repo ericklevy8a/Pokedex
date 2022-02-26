@@ -41,13 +41,10 @@ body {
 }
 
 header {
-    height: 64px;
     color: var(--header-color);
     background-color: var(--header-bg-color);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    box-shadow: 0px 0px 8px #000;
+    z-index: 2;
 }
 
 header * {
@@ -55,10 +52,9 @@ header * {
 }
 
 header h1 {
+    white-space: nowrap;
     font-weight: 900;
     font-size: 24px;
-    margin-left: 16px;
-    padding: 16px;
 }
 
 i.pokedex-logo {
@@ -71,28 +67,104 @@ i.pokedex-logo {
     vertical-align:bottom;
 }
 
-header nav {
+/* RESPONSIVE MENU FOR NAV BAR */
+
+/* Basic styling */
+nav {
+    width: 100%;
+}
+nav ul {
+    list-style-type: none;
+    padding: 0;
     margin: 0;
 }
-
-header nav ul {
-    margin-right: 16px;
+nav ul li {
+    height: fit-content;
 }
-
-header nav li {
-    display: inline-block;
-}
-
-header nav li a {
+.menu .item a {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 20px;
+    white-space: nowrap;
     color: var(--header-color);
-    font-weight: 900;
     text-decoration: none;
-    padding: 16px;
 }
-header nav li a:hover {
+.menu .item a:hover {
     color: var(--hover-color);
     background-color: var(--header-color);
 }
+.menu .item.search {
+    flex-grow: 1;
+    height: 60px;
+}
+.menu .item.search label {
+    vertical-align: super;
+}
+.menu .item.search input {
+    height: 2em;
+    width: 8em;
+    font-size: 16px;
+    border-radius: 1em;
+    padding: 0.5em;
+}
+.menu .item.search button {
+    height: 2em;
+    font-size: 16px;
+    border-radius: 1em;
+    padding: 4px;
+}
+
+/* Mobile menu */
+.menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    padding: 14px;
+}
+.toggle {
+    order: 1;
+    padding: 20px;
+}
+.item {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    display: none;
+    border-top: #444 1px solid;
+    border-bottom: #222 1px solid;
+}
+.search {
+    order: 2;
+    padding: 12px;
+    border: none;
+}
+
+.menu.active .item {
+    display: block;
+}
+
+/* Tablet menu */
+@media all and (min-width: 620px) {
+    .menu { justify-content: center; }
+    .logo { flex: 1; }
+    .search { width: auto; order: 1; display: block; }
+    .toggle { flex: 1; order: 2; text-align: right; }
+}
+
+/* Desktop menu */
+@media all and (min-width: 800px) {
+    .logo { flex: 1; }
+    .search { order: 1; }
+    .item { order: 2; display: block; width: auto; border: none; }
+    .toggle { display: none; }
+}
+
+/* FOOTER */
 
 footer {
     height: 64px;
@@ -102,6 +174,8 @@ footer {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    box-shadow: 0px 0px 8px #000;
+    z-index: 2;
 }
 
 footer * {
@@ -134,21 +208,16 @@ main {
     height: 160px;
     font-size: 12px;
     margin: 4px;
-    /* text-shadow: 1px 1px 1px #fff, -1px -1px 1px #fff, 1px -1px 1px #fff, -1px 1px 1px #fff; */
-    /* text-align: center; */
-    /* font-weight: 700; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    filter: brightness(90%);
 }
 
 #pokedex-container .card-mini:hover {
     cursor: pointer;
-    border: 5px solid #c33;
-    padding: 3px;
-    /* margin: 3px 5px 5px 3px;
-    box-shadow: 1px 1px 4px #000; */
+    filter: brightness(100%);
 }
 
 #pokedex-container .card-mini .head {
@@ -181,7 +250,7 @@ main {
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 0;
     left: 0;
     top: 0;
     overflow: auto;
@@ -229,19 +298,15 @@ main {
 
 .modal-header .modal-close {
     color: var(--header-color);
-    fill: var(--header-color);
     background-color: var(--header-bg-color);
     border-radius: 1em;
     border: none;
-    font-size: 24px;
-    width: 32px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 600;
+    width: 24px;
+    height: 24px;
 }
 
 .modal-header .modal-close:hover {
     color: var(--hover-color);
-    fill: var(--hover-color);
     background-color: var(--header-color);
 }
 
@@ -357,7 +422,6 @@ main {
     display: flex;
     flex-direction: row;
     color: white;
-    background-color: gray;
     min-width: 7em;
     padding: 4px;
     margin:  0 0.5em 0 0.5em;
@@ -365,7 +429,6 @@ main {
     border-radius: 1em;
     border: none;
     cursor: pointer;
-    /* text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000; */
 }
 
 #cardbox .type-slot .type-title {
@@ -389,7 +452,7 @@ main {
 }
 
 #cardbox .type-slot:hover {
-    box-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+    filter: brightness(120%);
 }
 
 #cardbox .tabify-tab {
