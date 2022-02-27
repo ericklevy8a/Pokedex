@@ -232,6 +232,7 @@ function cardboxDisplayData(data) {
     cardboxUpdateTypes();
     // Abilities
     // Stats
+    cardboxUpdateStats();
     // Etc
 }
 
@@ -330,6 +331,30 @@ function cardboxUpdateTypes() {
     tabify(typesTabsContainer);
 }
 
+function cardboxUpdateStats() {
+    const cardboxContainer = document.getElementById('cardbox-content');
+    const statsContainer = document.getElementById('stats-container');
+    let stats = [...cardboxContainer.data.stats];
+    statsContainer.innerHTML = '';
+    let html = '';
+    html += '<table class="table-stats">';
+    html += '<tbody>';
+    for (let i = 0; i < 3; i++) {
+        let stat = stats[i];
+        html += '<tr>';
+        let title = prepareTitle(stat.stat.name);
+        html += `<td>${title}</td>`;
+        let value = stat.base_stat;
+        // let width = value / 345 * 100;
+        html += `<td><div class="stat-bar"><div class="stat-bar-inner ${stat.stat.name}" style="width: calc(${value} / 250 * 100%)"></div></div></td>`;
+        html += `<td>${value}</td>`;
+        html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    statsContainer.innerHTML = html;
+}
+
 function cardboxClose() {
     const modalScreen = document.getElementById('modal-screen');
     const cardbox = document.getElementById('cardbox');
@@ -346,10 +371,19 @@ function cardboxClose() {
 function tabLoadContent(element) {
     if (element.innerHTML == '') {
         element.innerHTML = element.dataset.url;
-        let data = pokeFetchUrl(element.dataset.url);
-        console.log(data);
+        let data = pokeFetchUrl(element.dataset.url).then(data => console.log(data));
         // TODO: display table(s) for damage from and damage to (double, half and no damage)
+        let tabHeaders = document.createElement('div');
+        tabHeaders.classList.add('tabify-tabs-header');
+        let tabBodies = document.createElement('div');
+        tabBodies.classList.add('tabify-tabs');
+
     }
+}
+
+function damageTableTemplate(data) {
+    let table = document.createElement('table');
+
 }
 
 //
