@@ -444,7 +444,7 @@ main {
 }
 #cardbox #section-stats .stat-bar {
     width: 125px;
-    height: 6px;
+    height: 8px;
     position: relative;
     border-radius: 5px;
     background-color: #eee;
@@ -462,7 +462,6 @@ main {
 #cardbox #section-stats .stat-bar-inner.defense {
     background-color: #48bb78;
 }
-
 
 /* TYPES */
 #cardbox #section-types {
@@ -506,7 +505,24 @@ main {
 #cardbox .tabify-tab {
     border: 3px solid;
     border-radius: 0.5em;
-    padding: 20px;
+    padding: 16px;
+}
+
+#cardbox .table-damage {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    font-size: 0.75em;
+}
+#cardbox .table-damage th {
+    background-color: #ccc;
+    /* font-weight: normal; */
+}
+#cardbox .table-damage td {
+    border: 1px solid #ccc;
+}
+#cardbox .table-damage td img {
+    width: 16px;
 }
 
 /* TABIFY TABS */

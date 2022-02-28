@@ -345,7 +345,6 @@ function cardboxUpdateStats() {
         let title = prepareTitle(stat.stat.name);
         html += `<td>${title}</td>`;
         let value = stat.base_stat;
-        // let width = value / 345 * 100;
         html += `<td><div class="stat-bar"><div class="stat-bar-inner ${stat.stat.name}" style="width: calc(${value} / 250 * 100%)"></div></div></td>`;
         html += `<td>${value}</td>`;
         html += '</tr>';
@@ -370,20 +369,77 @@ function cardboxClose() {
 
 function tabLoadContent(element) {
     if (element.innerHTML == '') {
-        element.innerHTML = element.dataset.url;
-        let data = pokeFetchUrl(element.dataset.url).then(data => console.log(data));
-        // TODO: display table(s) for damage from and damage to (double, half and no damage)
-        let tabHeaders = document.createElement('div');
-        tabHeaders.classList.add('tabify-tabs-header');
-        let tabBodies = document.createElement('div');
-        tabBodies.classList.add('tabify-tabs');
-
+        // element.innerHTML = element.dataset.url;
+        let data = pokeFetchUrl(element.dataset.url).then(data => {
+            element.innerHTML = '';
+            let arrayTo = [];
+            let arrayFrom = [];
+            let html = '';
+            html += '<table class="table-damage">';
+            html += '<tbody>';
+            // headers
+            html += '<tr>';
+            html += '<th>Damage</th><th>To</th><th>From</th>';
+            html += '</tr>';
+            // Double
+            html += '<tr>';
+            html += '<td>Double</td>';
+            arrayTo = data.damage_relations.double_damage_to;
+            html += '<td>';
+            arrayTo.forEach(item => {
+                let title = prepareTitle(item.name);
+                html += `<img src="./img/type/${item.name}.svg" title="${title}">`;
+            });
+            html += '</td>';
+            arrayFrom = data.damage_relations.double_damage_from;
+            html += '<td>';
+            arrayFrom.forEach(item => {
+                let title = prepareTitle(item.name);
+                html += `<img src="./img/type/${item.name}.svg" title="${title}">`;
+            });
+            html += '</td>';
+            html += '</tr>';
+            // Half
+            html += '<tr>';
+            html += '<td>Half</td>';
+            arrayTo = data.damage_relations.half_damage_to;
+            html += '<td>';
+            arrayTo.forEach(item => {
+                let title = prepareTitle(item.name);
+                html += `<img src="./img/type/${item.name}.svg" title="${title}">`;
+            });
+            html += '</td>';
+            arrayFrom = data.damage_relations.half_damage_from;
+            html += '<td>';
+            arrayFrom.forEach(item => {
+                let title = prepareTitle(item.name);
+                html += `<img src="./img/type/${item.name}.svg" title="${title}">`;
+            });
+            html += '</td>';
+            html += '</tr>';
+            // Ineffective
+            html += '<tr>';
+            html += '<td>No</td>';
+            arrayTo = data.damage_relations.no_damage_to;
+            html += '<td>';
+            arrayTo.forEach(item => {
+                let title = prepareTitle(item.name);
+                html += `<img src="./img/type/${item.name}.svg" title="${title}">`;
+            });
+            html += '</td>';
+            arrayFrom = data.damage_relations.no_damage_from;
+            html += '<td>';
+            arrayFrom.forEach(item => {
+                let title = prepareTitle(item.name);
+                html += `<img src="./img/type/${item.name}.svg" title="${title}">`;
+            });
+            html += '</td>';
+            html += '</tr>';
+            html += '</tbody>';
+            html += '</table>';
+            element.innerHTML = html;
+        });
     }
-}
-
-function damageTableTemplate(data) {
-    let table = document.createElement('table');
-
 }
 
 //
