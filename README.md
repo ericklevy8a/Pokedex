@@ -20,3 +20,7 @@ Some of the front-end elements used in this little project:
 * Implementation of tabs (tabify)
 * Javascript collections, event listeners, timers, lambdas, promises
 * And so on...
+
+![Screenshot 1](Screenshot_1.jpg)
+
+![Screenshot 2](Screenshot_2.jpg)
