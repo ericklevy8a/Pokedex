@@ -8,6 +8,7 @@
     <title>Pokedex</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="pokedex.css">
+    <script src="pokedex.js" defer></script>
 </head>
 
 <body>
@@ -18,8 +19,8 @@
                     <h1><i class="pokedex-logo"></i>Pokedex</h1>
                 </li>
                 <li class="item search">
-                    <input type="search" name="q" placeholder="Search"><button type="button"><i class="material-icons"
-                            id="search-icon">search</i></button>
+                    <input type="search" id="search-input" name="q" placeholder="Search"><button type="button"
+                        id="search-button"><i class="material-icons" id="search-icon">search</i></button>
                 </li>
                 <li class="item"><a href="#">List</a></li>
                 <li class="item"><a href="#">Options</a></li>
@@ -110,7 +111,5 @@
         </div>
 
 </body>
-
-<script src="pokedex.js"></script>
 
 </html>

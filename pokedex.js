@@ -81,36 +81,46 @@ var intersectionCallback = function (entries, observer) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             let target = entry.target;
-            // Fetch one time only to optimize (when data is undefined)
-            if (target.data == undefined) {
-                // Fetch the pokemon data
-                pokeFetchUrl(target.dataset.url).then(data => {
-                    target.data = data;
-                    let id = data.id;
-                    let imageUrl = data.sprites.front_default || './img/null.png';
-                    let name = prepareTitle(data.name);
-
-                    // Type dependent colors
-                    let head = document.createElement('div');
-                    head.classList.add('head');
-                    [...data.types].forEach(type => {
-                        let name = type.type.name;
-                        let title = prepareTitle(name);
-                        let color = typesColors[name];
-                        head.innerHTML += `<img class="type-icon" src="./img/type/${name}.svg" title="${title}">`;
-                    });
-                    head.innerHTML += `<span class="expanded right">${id}</span>`;
-                    target.appendChild(head);
-
-                    target.innerHTML += `<img src="${imageUrl}" onerror="this.style.display='none'"/>`;
-                    target.innerHTML += `<label title="${name}">${name}</label>`;
-
-                    // Set a click event listener
-                    target.addEventListener('click', pokeCardOnClick);
-                });
-            }
+            fetchCard(target);
         }
     });
+}
+
+// Fetch content for the target card
+async function fetchCard(target) {
+    // Fetch one time only to optimize (when data is undefined)
+    if (target.data == undefined) {
+        // Fetch the pokemon data
+        pokeFetchUrl(target.dataset.url).then(data => {
+            target.data = data;
+            target.innerHTML = '';
+            let searchKeys = [];
+            let id = data.id;
+            searchKeys.push(id);
+            searchKeys.push(data.name);
+            let imageUrl = data.sprites.front_default || './img/null.png';
+            let name = prepareTitle(data.name, '-');
+            // Type dependent colors
+            let head = document.createElement('div');
+            head.classList.add('head');
+            [...data.types].forEach(type => {
+                let name = type.type.name;
+                searchKeys.push(name);
+                let title = prepareTitle(name, '-');
+                // let color = typesColors[name];
+                head.innerHTML += `<img class="type-icon ${name}" src="./img/type/${name}.svg" title="${title}">`;
+            });
+            head.innerHTML += `<span class="expanded right">${id}</span>`;
+            target.appendChild(head);
+            target.innerHTML += `<img src="${imageUrl}" onerror="this.style.display='none'"/>`;
+            target.innerHTML += `<label title="${name}">${name}</label>`;
+            // some data tags for search keys
+            target.dataset.searchKeys = searchKeys.join(' ');
+            // Set a click event listener
+            target.addEventListener('click', pokeCardOnClick);
+        });
+    }
+    return target;
 }
 
 // Create a instance of IntersectionObserver
@@ -214,15 +224,14 @@ function cardboxOpen(data) {
 
 function cardboxDisplayData(data) {
     const cardboxContainer = document.getElementById('cardbox-content');
-
-    console.log(data);
-
     cardboxContainer.data = data;
     // Id and Name
     const cardboxTitle = document.getElementById('cardbox-title');
-    cardboxTitle.innerText = data.id + ' ' + prepareTitle(data.name);
+    cardboxTitle.innerText = data.id + ' ' + prepareTitle(data.name, '-');
     // Sprites
     cardboxUpdateSprites();
+    // Stats
+    cardboxUpdateStats();
     // Size
     const sizeWeight = document.getElementById('size-weight');
     const sizeHeight = document.getElementById('size-height');
@@ -231,8 +240,6 @@ function cardboxDisplayData(data) {
     // Types and damage relations
     cardboxUpdateTypes();
     // Abilities
-    // Stats
-    cardboxUpdateStats();
     // Etc
 }
 
@@ -307,7 +314,6 @@ function cardboxUpdateTypes() {
     const typesTabsHeader = document.getElementById('types-tabs-header');
     const typesTabs = document.getElementById('types-tabs');
     let types = [...cardboxContainer.data.types];
-    console.log(types);
     typesTabsHeader.innerHTML = '';
     typesTabs.innerHTML = '';
     types.forEach(slot => {
@@ -478,7 +484,7 @@ function tabify(element) {
 }
 
 // this is where the magic happens!
-//   [...document.querySelectorAll('.gator-tabs-container')]
+//   [...document.querySelectorAll('.tabify-tabs-container')]
 //     .forEach(x => tabify(x));
 
 //
@@ -489,16 +495,16 @@ function capitalize(str) {
     return str[0].toUpperCase() + str.substring(1);
 }
 
-function prepareTitle(str) {
-    let tokens = str.split('-');
+function prepareTitle(str, splitChar = ' ', joinChar = ' ') {
+    let tokens = str.split(splitChar);
     str = '';
     tokens.forEach((token, index, array) => {
         array[index] = capitalize(token);
     });
-    return tokens.join(' ');
+    return tokens.join(joinChar);
 }
 
-// Top-nav initialization
+// Top-nav menu initialization
 function toggleMenu() {
     const menu = document.getElementById('top-menu');
     const icon = document.getElementById('toggle-icon');
@@ -506,5 +512,48 @@ function toggleMenu() {
     icon.innerText = (icon.innerText == 'menu') ? 'close' : 'menu';
 }
 document.getElementById('toggle-icon').addEventListener('click', toggleMenu);
+
+// Search implementation
+async function search() {
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    let value = searchInput.value.toLowerCase();
+    // Disable search controls
+    searchInput.disabled = true;
+    searchButton.disabled = true;
+    // TODO: Split search tokens and make a search criteria array
+    // Iterates all the pokedex mini-cards to hide/unhide
+    const cards = [...document.getElementsByClassName('card-mini')];
+    cards.forEach(async function (card) {
+        if (value == '') {
+            card.style.display = 'flex';
+            return;
+        } else {
+            fetchCard(card).then(async function (newCard) {
+                let sk = await newCard.dataset.searchKeys;
+                let flag = false;
+                if (sk !== undefined && sk.includes(value)) {
+                    flag = true;
+                }
+                newCard.style.display = flag ? 'flex' : 'none';
+            });
+        }
+    });
+    // Enable search controls
+    searchButton.disabled = false;
+    searchInput.disabled = false;
+    searchInput.focus();
+}
+function onkeyup(e) {
+    if (e.code == 'Escape') {
+        e.target.blur();
+        return;
+    }
+    if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+        search();
+    }
+}
+document.getElementById('search-input').addEventListener('keyup', onkeyup);
+document.getElementById('search-button').addEventListener('click', search);
 
 // End of code.

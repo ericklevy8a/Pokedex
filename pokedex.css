@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;900&display=swap');
 
+@viewport {
+    zoom: 1.0;
+    width: device-width;
+}
+
 :root {
 
     --header-color: #fff;
@@ -108,16 +113,30 @@ nav ul li {
     border: #444 1px solid;
     vertical-align: bottom;
     outline: none;
+    border-radius: 8px 0 0 8px;
 }
 .menu .item.search input:focus {
-    border-color: var(--header-color);
+    border-color: #666;
     background-color: #000;
 }
+.menu .item.search input:disabled {
+    color: #666;
+    background-color: var(--header-bg-color);
+}
 .menu .item.search button {
+    outline: none;
     color: var(--header-color);
     background-color: #444;
     padding: 1px 16px;
     font-size: 16px;
+    border-radius: 0 8px 8px 0;
+}
+.menu .item.search button:focus {
+    color: var(--hover-color);
+    background-color: var(--header-color);
+}
+.menu .item.search button:disabled {
+    color: #666;
 }
 
 /* Mobile menu */
