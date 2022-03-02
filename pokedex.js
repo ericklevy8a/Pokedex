@@ -5,25 +5,26 @@
 const pokeApiUrl = 'https://pokeapi.co/api/v2/';
 
 var giPageSize = 12;
-var giPageNum = 0;
-
 var giPokeCount = null;
-
-const pageContainer = document.getElementById('pokedex-container');
 
 /**
  * pokeFetchPage
- * @param {integer} pageNum     The number of page to fetch to calculate the offset
+ * @param {integer} pageNum     The number of page to fetch to calculate the offset (default = 0)
  * @param {integer} pageSize    The limit size of the page (also to calculate the offset)
  * @returns JSON data with the response of the poke API web fetching
  */
-async function pokeFetchPage(pageNum = giPageNum, pageSize = giPageSize) {
+async function pokeFetchPage(pageNum = 0, pageSize = giPageSize) {
     let limit = pageSize;
     let offset = pageNum * pageSize;
     const url = pokeApiUrl + `pokemon?limit=${limit}&offset=${offset}`;
     const response = await fetch(url);
     const data = await response.json();
     return data;
+}
+
+async function pokeGetPokemonCount() {
+    result = await pokeFetchPage();
+    return result.count || false;
 }
 
 async function pokeFetchAll() {
@@ -47,12 +48,8 @@ async function pokeFetchUrl(url) {
     return data;
 }
 
-async function pokeGetPokemonCount() {
-    result = await pokeFetchPage(0, 1);
-    return result.count || false;
-}
-
 // Fetch all the pokemons names and urls in the pokedex and generate simple cards
+const pageContainer = document.getElementById('pokedex-container');
 pokeFetchAll().then(data => {
     var elements = data.results;
     elements.forEach(element => {
@@ -60,6 +57,7 @@ pokeFetchAll().then(data => {
         card.classList.add('card-mini');
         card.dataset.name = element.name;
         card.dataset.url = element.url;
+        card.dataset.searchKeys = '';
         pageContainer.appendChild(card);
         observer.observe(card);
     });
@@ -87,40 +85,72 @@ var intersectionCallback = function (entries, observer) {
 }
 
 // Fetch content for the target card
-async function fetchCard(target) {
-    // Fetch one time only to optimize (when data is undefined)
+async function fetchCard(target, searchValue = undefined) {
+    // Check if data is undefined (to fetch the data only one time)
     if (target.data == undefined) {
         // Fetch the pokemon data
         pokeFetchUrl(target.dataset.url).then(data => {
+            // Store the data in target and reset his html
             target.data = data;
             target.innerHTML = '';
-            let searchKeys = [];
+            // Prepare some data for the card
             let id = data.id;
+            let title = prepareTitle(data.name, '-');
+            let imageUrl = data.sprites.front_default || './img/null.png';
+            // Append search keys
+            let searchKeys = [];
             searchKeys.push(id);
             searchKeys.push(data.name);
-            let imageUrl = data.sprites.front_default || './img/null.png';
-            let name = prepareTitle(data.name, '-');
-            // Type dependent colors
+            // Prepare a head element with type(s) icons and ID number
             let head = document.createElement('div');
             head.classList.add('head');
             [...data.types].forEach(type => {
                 let name = type.type.name;
-                searchKeys.push(name);
                 let title = prepareTitle(name, '-');
-                // let color = typesColors[name];
+                searchKeys.push(name);
                 head.innerHTML += `<img class="type-icon ${name}" src="./img/type/${name}.svg" title="${title}">`;
             });
             head.innerHTML += `<span class="expanded right">${id}</span>`;
             target.appendChild(head);
+            // Default image for the pokemon
             target.innerHTML += `<img src="${imageUrl}" onerror="this.style.display='none'"/>`;
-            target.innerHTML += `<label title="${name}">${name}</label>`;
-            // some data tags for search keys
+            // Name of the pokemon
+            target.innerHTML += `<label>${title}</label>`;
+            // Create and stores the search keys string
             target.dataset.searchKeys = searchKeys.join(' ');
+            // If search value is defined, apply the filter
+            if (searchValue != undefined) {
+                if (searchValue == '') {
+                    // no search key in value, unhide card
+                    target.classList.remove('hide');
+                } else {
+                    // Fetch the card to be sure the data is loaded and search keys string formed
+                    if (target.dataset.searchKeys.includes(searchValue)) {
+                        target.classList.remove('hide');
+                    } else {
+                        target.classList.add('hide');
+                    }
+                }
+            }
             // Set a click event listener
             target.addEventListener('click', pokeCardOnClick);
         });
+    } else {
+        // If search value is defined, apply the filter
+        if (searchValue != undefined) {
+            if (searchValue == '') {
+                // no search key in value, unhide card
+                target.classList.remove('hide');
+            } else {
+                // Fetch the card to be sure the data is loaded and search keys string formed
+                if (target.dataset.searchKeys.includes(searchValue)) {
+                    target.classList.remove('hide');
+                } else {
+                    target.classList.add('hide');
+                }
+            }
+        }
     }
-    return target;
 }
 
 // Create a instance of IntersectionObserver
@@ -245,42 +275,54 @@ function cardboxDisplayData(data) {
 
 function cardboxUpdateSprites() {
     const cardboxContainer = document.getElementById('cardbox-content');
-    let sprites = cardboxContainer.data.sprites;
     const imageSprite = document.getElementById('image-sprite');
     const checkBack = document.getElementById('check-back');
     const checkShiny = document.getElementById('check-shiny');
     const checkFemale = document.getElementById('check-female');
+    let sprites = cardboxContainer.data.sprites;
+    let title = 'Image not vailable';
+    let src = './img/null.png';
     // Verify back sprites
     if (sprites['back_default'] == null) {
         checkBack.checked = false;
         checkBack.disabled = true;
+        checkBack.parentElement.classList.add('disabled');
     } else {
         checkBack.disabled = false;
+        checkBack.parentElement.classList.remove('disabled');
     }
     // Verify shiny sprites
     if (sprites['front_shiny'] == null) {
         checkShiny.checked = false;
         checkShiny.disabled = true;
+        checkShiny.parentElement.classList.add('disabled');
     } else {
         checkShiny.disabled = false;
+        checkShiny.parentElement.classList.remove('disabled');
     }
     // Verify female sprites
     if (sprites['front_female'] == null) {
         checkFemale.checked = false;
         checkFemale.disabled = true;
+        checkFemale.parentElement.classList.add('disabled');
     } else {
         checkFemale.disabled = false;
+        checkFemale.parentElement.classList.remove('disabled');
     }
     // Select image
-    let selKey = 'front_default';
+    let selKey = '';
+
     selKey = checkBack.checked ? 'back' : 'front';
     selKey += checkShiny.checked ? '_shiny' : '';
     selKey += checkFemale.checked ? '_female' : (checkShiny.checked ? '' : '_default');
     let url = sprites[selKey];
     if (url && typeof (url) === 'string') {
-        imageSprite.title = selKey;
-        imageSprite.src = sprites[selKey];
+        title = selKey;
+        src = sprites[selKey];
     }
+    imageSprite.title = title;
+    imageSprite.src = src;
+
     // Event listeners
     checkBack.addEventListener('change', cardboxUpdateSprites);
     checkFemale.addEventListener('change', cardboxUpdateSprites);
@@ -514,37 +556,25 @@ function toggleMenu() {
 document.getElementById('toggle-icon').addEventListener('click', toggleMenu);
 
 // Search implementation
-async function search() {
+function search() {
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
-    let value = searchInput.value.toLowerCase();
+    const searchValue = searchInput.value.toLowerCase();
     // Disable search controls
     searchInput.disabled = true;
     searchButton.disabled = true;
-    // TODO: Split search tokens and make a search criteria array
-    // Iterates all the pokedex mini-cards to hide/unhide
+    // TODO: Split search tokens and make a multi search criteria array
+    // Iterates all the pokedex mini-cards to filter by search value
     const cards = [...document.getElementsByClassName('card-mini')];
-    cards.forEach(async function (card) {
-        if (value == '') {
-            card.style.display = 'flex';
-            return;
-        } else {
-            fetchCard(card).then(async function (newCard) {
-                let sk = await newCard.dataset.searchKeys;
-                let flag = false;
-                if (sk !== undefined && sk.includes(value)) {
-                    flag = true;
-                }
-                newCard.style.display = flag ? 'flex' : 'none';
-            });
-        }
+    cards.forEach(card => {
+        fetchCard(card, searchValue);
     });
     // Enable search controls
     searchButton.disabled = false;
     searchInput.disabled = false;
     searchInput.focus();
 }
-function onkeyup(e) {
+function searchInputOnKeyup(e) {
     if (e.code == 'Escape') {
         e.target.blur();
         return;
@@ -553,7 +583,7 @@ function onkeyup(e) {
         search();
     }
 }
-document.getElementById('search-input').addEventListener('keyup', onkeyup);
+document.getElementById('search-input').addEventListener('keyup', searchInputOnKeyup);
 document.getElementById('search-button').addEventListener('click', search);
 
 // End of code.

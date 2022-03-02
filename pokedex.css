@@ -595,11 +595,15 @@ main {
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
 
 .invisibe {
-    visibility: hidden;
+    visibility: hidden !important;
+}
+
+.disabled {
+    filter:opacity(50%);
 }
 
 /* End of Code */
