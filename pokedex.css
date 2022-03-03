@@ -271,7 +271,6 @@ main {
     height: 100%;
     background-color: black;
     background-color: rgba(0, 0, 0, 0.5);
-    display: none;
     position: fixed;
     z-index: 0;
     left: 0;
@@ -290,7 +289,6 @@ main {
 .modal-dialog {
     color: var(--dialog-color);
     background-color: var(--dialog-bg-color);
-    display: none;
     padding: 0;
     border: none;
     border-radius: 8px;
@@ -378,20 +376,11 @@ main {
 }
 
 .fade {
-    transition: opacity 500ms,
-        visibility 500ms step-end;
-        /* display 500ms step-end; */
+    transition: opacity 500ms;
     opacity: 0;
-    visibility: hidden;
-    /* display: none; */
 }
 
 .fade.show {
-    transition: opacity 500ms,
-    visibility 500ms step-start;
-    /* display 2500ms step-start; */
-    /* display: block; */
-    visibility: visible;
     opacity: 1;
 }
 

@@ -210,10 +210,12 @@ function msgbox(title, text, arrActions = strings.btnOk || 'Ok', fnOnClick = msg
         msgboxButtons.appendChild(button);
     });
     // Unhide modal screen and box
-    modalScreen.style.display = 'block';
-    msgbox.style.display = 'block';
-    modalScreen.classList.add('show');
-    msgbox.classList.add('show');
+    modalScreen.classList.remove('hide');
+    msgbox.classList.remove('hide');
+    setTimeout(() => {
+        modalScreen.classList.add('show');
+        msgbox.classList.add('show');
+    }, 0);
 }
 
 function msgboxClose() {
@@ -224,17 +226,15 @@ function msgboxClose() {
     msgbox.classList.remove('show');
     modalScreen.classList.remove('show');
     setTimeout(() => {
-        modalScreen.style.display = 'none';
-        msgbox.style.display = 'none';
+        modalScreen.classList.add('hide');
+        msgbox.classList.add('hide');
     }, 500);
 }
 
-/**
- * Modal configuration box dialog.
- *
- * Displays a configuration modal dialog box, call the update and display options functions,
- * and let the user change settings.
- */
+//
+// Modal cardbox dialog to display more pokemon data.
+//
+
 function cardboxOpen(data) {
     const modalScreen = document.getElementById('modal-screen');
     const cardbox = document.getElementById('cardbox');
@@ -246,10 +246,12 @@ function cardboxOpen(data) {
     // Update and display options
     cardboxDisplayData(data);
     // Unhide modal screen and box
-    modalScreen.style.display = 'block';
-    cardbox.style.display = 'block';
-    modalScreen.classList.add('show');
-    cardbox.classList.add('show');
+    modalScreen.classList.remove('hide');
+    cardbox.classList.remove('hide');
+    setTimeout(() => {
+        modalScreen.classList.add('show');
+        cardbox.classList.add('show');
+    }, 0);
 }
 
 function cardboxDisplayData(data) {
@@ -311,7 +313,6 @@ function cardboxUpdateSprites() {
     }
     // Select image
     let selKey = '';
-
     selKey = checkBack.checked ? 'back' : 'front';
     selKey += checkShiny.checked ? '_shiny' : '';
     selKey += checkFemale.checked ? '_female' : (checkShiny.checked ? '' : '_default');
@@ -322,11 +323,33 @@ function cardboxUpdateSprites() {
     }
     imageSprite.title = title;
     imageSprite.src = src;
-
     // Event listeners
     checkBack.addEventListener('change', cardboxUpdateSprites);
     checkFemale.addEventListener('change', cardboxUpdateSprites);
     checkShiny.addEventListener('change', cardboxUpdateSprites);
+}
+
+function cardboxUpdateStats() {
+    const cardboxContainer = document.getElementById('cardbox-content');
+    const statsContainer = document.getElementById('stats-container');
+    let stats = [...cardboxContainer.data.stats];
+    statsContainer.innerHTML = '';
+    let html = '';
+    html += '<table class="table-stats">';
+    html += '<tbody>';
+    for (let i = 0; i < 3; i++) {
+        let stat = stats[i];
+        html += '<tr>';
+        let title = prepareTitle(stat.stat.name);
+        html += `<td>${title}</td>`;
+        let value = stat.base_stat;
+        html += `<td><div class="stat-bar"><div class="stat-bar-inner ${stat.stat.name}" style="width: calc(${value} / 250 * 100%)"></div></div></td>`;
+        html += `<td>${value}</td>`;
+        html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    statsContainer.innerHTML = html;
 }
 
 const typesColors = {
@@ -379,50 +402,15 @@ function cardboxUpdateTypes() {
     tabify(typesTabsContainer);
 }
 
-function cardboxUpdateStats() {
-    const cardboxContainer = document.getElementById('cardbox-content');
-    const statsContainer = document.getElementById('stats-container');
-    let stats = [...cardboxContainer.data.stats];
-    statsContainer.innerHTML = '';
-    let html = '';
-    html += '<table class="table-stats">';
-    html += '<tbody>';
-    for (let i = 0; i < 3; i++) {
-        let stat = stats[i];
-        html += '<tr>';
-        let title = prepareTitle(stat.stat.name);
-        html += `<td>${title}</td>`;
-        let value = stat.base_stat;
-        html += `<td><div class="stat-bar"><div class="stat-bar-inner ${stat.stat.name}" style="width: calc(${value} / 250 * 100%)"></div></div></td>`;
-        html += `<td>${value}</td>`;
-        html += '</tr>';
-    }
-    html += '</tbody>';
-    html += '</table>';
-    statsContainer.innerHTML = html;
-}
-
-function cardboxClose() {
-    const modalScreen = document.getElementById('modal-screen');
-    const cardbox = document.getElementById('cardbox');
-    document.removeEventListener('keyup', document.keyupfn);
-    // Hide modal screen and box
-    modalScreen.classList.remove('show');
-    cardbox.classList.remove('show');
-    setTimeout(() => {
-        modalScreen.style.display = 'none';
-        cardbox.style.display = 'none';
-    }, 500);
-}
-
-function tabLoadContent(element) {
+function cardboxTypesLoadTabContent(element) {
+    // Check if the content is empty, to fetch and create this only the first time
     if (element.innerHTML == '') {
-        // element.innerHTML = element.dataset.url;
-        let data = pokeFetchUrl(element.dataset.url).then(data => {
+        pokeFetchUrl(element.dataset.url).then(data => {
             element.innerHTML = '';
             let arrayTo = [];
             let arrayFrom = [];
             let html = '';
+            // Create HTML table
             html += '<table class="table-damage">';
             html += '<tbody>';
             // headers
@@ -483,11 +471,25 @@ function tabLoadContent(element) {
             });
             html += '</td>';
             html += '</tr>';
+            // Close the table and render
             html += '</tbody>';
             html += '</table>';
             element.innerHTML = html;
         });
     }
+}
+
+function cardboxClose() {
+    const modalScreen = document.getElementById('modal-screen');
+    const cardbox = document.getElementById('cardbox');
+    document.removeEventListener('keyup', document.keyupfn);
+    // Hide modal screen and box
+    modalScreen.classList.remove('show');
+    cardbox.classList.remove('show');
+    setTimeout(() => {
+        modalScreen.classList.add('hide');
+        cardbox.classList.add('hide');
+    }, 500);
 }
 
 //
@@ -499,18 +501,20 @@ function tabify(element) {
     const content = element.querySelector('.tabify-tabs');
     const tab_headers = [...header.children];
     const tab_contents = [...content.children];
-    tab_contents.forEach(x => x.style.display = 'none');
+    tab_contents.forEach(x => x.classList.add('hide'));
     let current_tab_index = -1;
 
     function setTab(index) {
         if (current_tab_index > -1) {
             tab_headers[current_tab_index].classList.remove('current');
-            tab_contents[current_tab_index].style.display = 'none';
+            tab_contents[current_tab_index].classList.add('hide');
         }
         if (current_tab_index !== index) {
-            tabLoadContent(tab_contents[index]);
+            // Special function to create the content of the tab the first time it is viewed
+            cardboxTypesLoadTabContent(tab_contents[index]);
+            //
             tab_headers[index].classList.add('current');
-            tab_contents[index].style.display = 'flex';
+            tab_contents[index].classList.remove('hide');
             current_tab_index = index;
         } else {
             current_tab_index = -1;
@@ -520,7 +524,7 @@ function tabify(element) {
     default_tab_index = tab_headers.findIndex(x => {
         return [...x.classList].indexOf('tabify-default') > -1;
     });
-    //default_tab_index = default_tab_index === -1 ? 0 : default_tab_index;
+    // default_tab_index = default_tab_index === -1 ? 0 : default_tab_index;
     setTab(default_tab_index);
     tab_headers.forEach((x, i) => x.onclick = event => setTab(i));
 }
