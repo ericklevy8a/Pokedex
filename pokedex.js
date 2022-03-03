@@ -79,77 +79,74 @@ var intersectionCallback = function (entries, observer) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             let target = entry.target;
-            fetchCard(target);
+            let displayed = window.getComputedStyle(target).display != 'none';
+            if (displayed) {
+                renderCard(target);
+            }
         }
     });
 }
 
-// Fetch content for the target card
-async function fetchCard(target, searchValue = undefined) {
+// Controler to render the mini card HTML content
+async function renderCard(target) {
+    if (target.innerHTML == '') {
+        if (target.data == undefined) {
+            fetchCard(target).then(target => {
+                cardHTML(target);
+            });
+        } else {
+            cardHTML(target);
+        }
+    }
+}
+
+function cardHTML(target) {
+    // Prepare some data for the card
+    let data = target.data;
+    let id = data.id;
+    let title = prepareTitle(data.name, '-');
+    let imageUrl = data.sprites.front_default || './img/null.png';
+    // Prepare a head element with type(s) icons and ID number
+    let head = document.createElement('div');
+    head.classList.add('head');
+    [...data.types].forEach(type => {
+        let name = type.type.name;
+        let title = prepareTitle(name, '-');
+        head.innerHTML += `<img class="type-icon ${name}" src="./img/type/${name}.svg" title="${title}">`;
+    });
+    head.innerHTML += `<span class="expanded right">${id}</span>`;
+    target.appendChild(head);
+    // Default image for the pokemon
+    target.innerHTML += `<img src="${imageUrl}" onerror="this.style.display='none'"/>`;
+    // Name of the pokemon
+    target.innerHTML += `<label>${title}</label>`;
+    // Create and stores the search keys string
+    // Set a click event listener
+    target.addEventListener('click', pokeCardOnClick);
+};
+
+// Fetch content for the target mini card
+async function fetchCard(target) {
     // Check if data is undefined (to fetch the data only one time)
     if (target.data == undefined) {
         // Fetch the pokemon data
-        pokeFetchUrl(target.dataset.url).then(data => {
-            // Store the data in target and reset his html
+        return await pokeFetchUrl(target.dataset.url).then(data => {
+            // Store the data in target element
             target.data = data;
-            target.innerHTML = '';
-            // Prepare some data for the card
-            let id = data.id;
-            let title = prepareTitle(data.name, '-');
-            let imageUrl = data.sprites.front_default || './img/null.png';
-            // Append search keys
+            // Prepare search keys
             let searchKeys = [];
-            searchKeys.push(id);
+            searchKeys.push(data.id);
             searchKeys.push(data.name);
-            // Prepare a head element with type(s) icons and ID number
-            let head = document.createElement('div');
-            head.classList.add('head');
             [...data.types].forEach(type => {
                 let name = type.type.name;
-                let title = prepareTitle(name, '-');
                 searchKeys.push(name);
-                head.innerHTML += `<img class="type-icon ${name}" src="./img/type/${name}.svg" title="${title}">`;
             });
-            head.innerHTML += `<span class="expanded right">${id}</span>`;
-            target.appendChild(head);
-            // Default image for the pokemon
-            target.innerHTML += `<img src="${imageUrl}" onerror="this.style.display='none'"/>`;
-            // Name of the pokemon
-            target.innerHTML += `<label>${title}</label>`;
             // Create and stores the search keys string
             target.dataset.searchKeys = searchKeys.join(' ');
-            // If search value is defined, apply the filter
-            if (searchValue != undefined) {
-                if (searchValue == '') {
-                    // no search key in value, unhide card
-                    target.classList.remove('hide');
-                } else {
-                    // Fetch the card to be sure the data is loaded and search keys string formed
-                    if (target.dataset.searchKeys.includes(searchValue)) {
-                        target.classList.remove('hide');
-                    } else {
-                        target.classList.add('hide');
-                    }
-                }
-            }
-            // Set a click event listener
-            target.addEventListener('click', pokeCardOnClick);
+            return target;
         });
     } else {
-        // If search value is defined, apply the filter
-        if (searchValue != undefined) {
-            if (searchValue == '') {
-                // no search key in value, unhide card
-                target.classList.remove('hide');
-            } else {
-                // Fetch the card to be sure the data is loaded and search keys string formed
-                if (target.dataset.searchKeys.includes(searchValue)) {
-                    target.classList.remove('hide');
-                } else {
-                    target.classList.add('hide');
-                }
-            }
-        }
+        return target;
     }
 }
 
@@ -559,8 +556,9 @@ function toggleMenu() {
 }
 document.getElementById('toggle-icon').addEventListener('click', toggleMenu);
 
-// Search implementation
-function search() {
+// SEARCH IMPLEMENTATION
+
+async function search() {
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
     const searchValue = searchInput.value.toLowerCase();
@@ -571,13 +569,35 @@ function search() {
     // Iterates all the pokedex mini-cards to filter by search value
     const cards = [...document.getElementsByClassName('card-mini')];
     cards.forEach(card => {
-        fetchCard(card, searchValue);
+        if (card.data == undefined) {
+            fetchCard(card).then(target => {
+                applyFilter(target, searchValue);
+            });
+        } else {
+            applyFilter(card, searchValue);
+        }
     });
     // Enable search controls
     searchButton.disabled = false;
     searchInput.disabled = false;
     searchInput.focus();
+    searchInput.select();
 }
+
+function applyFilter(target, searchValue) {
+    if (searchValue == '') {
+        // no search key in value, unhide card
+        target.classList.remove('hide');
+    } else {
+        // Fetch the card to be sure the data is loaded and search keys string formed
+        if (target.dataset.searchKeys.includes(searchValue)) {
+            target.classList.remove('hide');
+        } else {
+            target.classList.add('hide');
+        }
+    }
+}
+
 function searchInputOnKeyup(e) {
     if (e.code == 'Escape') {
         e.target.blur();
@@ -587,6 +607,7 @@ function searchInputOnKeyup(e) {
         search();
     }
 }
+
 document.getElementById('search-input').addEventListener('keyup', searchInputOnKeyup);
 document.getElementById('search-button').addEventListener('click', search);
 
