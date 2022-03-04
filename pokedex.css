@@ -232,8 +232,8 @@ main {
     background-size: 92px 92px;
     border-radius: 8px;
     padding: 8px;
-    width: 120px;
-    height: 160px;
+    width: 110px;
+    height: 150px;
     font-size: 12px;
     margin: 4px;
     display: flex;
@@ -654,9 +654,18 @@ main {
         height: 194px;
         width: 192px;
     }
+    #help-container {
+        font-size: 1.2em;
+    }
 }
 
 #help-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
     padding: 32px;
     overflow: auto;
 }

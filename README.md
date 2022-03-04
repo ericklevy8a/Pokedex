@@ -8,8 +8,9 @@ This is a personal front-end implementation to access to the poke API data servi
 
 Thank you for taking the time to learn about and play with this little app.
 
-Some of the front-end elements used in this little project:
+Some of the front-end topics used in this little project:
 
+* Fetching data from external API services
 * HTML5 semantic web tags
 * Javascript referencing and manipulation of DOM elements
 * CSS3 flex displaying and distribution
