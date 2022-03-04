@@ -9,107 +9,22 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="pokedex.css">
-    <script src="pokedex.js" defer></script>
 </head>
 
 <body>
-    <header>
-        <nav>
-            <ul class="menu" id="top-menu">
-                <li class="logo">
-                    <h1><i class="pokedex-logo"></i>Pokedex</h1>
-                </li>
-                <li class="item search">
-                    <input type="search" id="search-input" name="q" placeholder="Search"><button type="button"
-                        id="search-button"><i class="material-icons" id="search-icon">search</i></button>
-                </li>
-                <li class="item"><a href="#">List</a></li>
-                <li class="item"><a href="#">Options</a></li>
-                <li class="item"><a href="#">Help</a></li>
-                <li class="toggle">
-                    <i class="material-icons" id="toggle-icon">menu</i>
-                </li>
-            </ul>
-        </nav>
-    </header>
 
-    <main>
-        <div id="pokedex-container">
-            <!-- MAIN CONTENT -->
+    <div class="splash-container">
+        <div class="splash">
+            <img src="./img/pokeball.png" height="128" width="128">
+            <h1>Pokedex</h1>
+            <a href="./list.html">Go</a>
+            <p>&copy; 2022 by Erick Levy!</p>
+            <br>
+            <p class="small">&copy;2022 Pokémon.
+                &copy;1995-2022 Nintendo/Creatures Inc./GAME FREAK inc TM,
+                &reg;Nintendo.</p>
         </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2022 by Erick Levy!</p>
-    </footer>
-
-    <!-- TAGS FOR MODAL DIALOGS -->
-    <div id="modal-screen" class="modal-screen fade hide">
-        <div class="modal-content">
-
-            <!-- MSGBOX -->
-            <div id="msgbox" class="modal-dialog fade hide">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h4 id="msgbox-title" class="modal-title">Title</h4>
-                        <i id="msgbox-title-close" class="material-icons modal-close">close</i>
-                    </div>
-                    <div class="modal-body">
-                        <p id="msgbox-text">Text paragraph</p>
-                    </div>
-                    <div class="modal-footer">
-                        <div id="msgbox-buttons">
-                            <!-- BUTTONS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARDBOX TO DISPLAY THE POKEMON DATA -->
-            <div id="cardbox" class="modal-dialog fade hide">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h4 id="cardbox-title" class="modal-title">Title</h4>
-                        <i id="cardbox-title-close" class="material-icons modal-close">close</i>
-                    </div>
-                    <div id="cardbox-content" class="modal-body">
-                        <!-- SPRITES -->
-                        <section id="section-sprites">
-                            <div>
-                                <label><input type="checkbox" id="check-back" name="back" value="back">
-                                    Back</label>
-                                <label><input type="checkbox" id="check-shiny" name="shiny" value="shiny">
-                                    Shiny</label>
-                                <label><input type="checkbox" id="check-female" name="female" value="female">
-                                    Female</label>
-                            </div>
-                            <img class="sprite" id="image-sprite" src="" title="sprite">
-                        </section>
-                        <!-- STATS-->
-                        <section id="section-stats">
-                            <div id="stats-container"></div>
-                        </section>
-                        <!-- SIZE (WEIGHT AND HEIGHT) -->
-                        <section id="section-size">
-                            <label>Weight: <span id="size-weight"></span></label>
-                            <label>Height: <span id="size-height"></span></label>
-                        </section>
-                        <!-- TYPES -->
-                        <section id="section-types">
-                            <div class="tabify-tabs-container" id="types-tabs-container">
-                                <div class="tabify-tabs-header" id="types-tabs-header">
-                                    <!-- TABS HEADERS -->
-                                </div>
-                                <div class="tabify-tabs" id="types-tabs">
-                                    <!-- TABS BODIES -->
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+    </div>
 
 </body>
 
